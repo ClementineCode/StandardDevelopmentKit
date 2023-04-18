@@ -1,0 +1,229 @@
+<?php 
+
+add_shortcode( 'masonrygal', 'masonrygal'); 
+
+?>
+
+
+<?php function masonrygal(){ ob_start(); ?>
+
+<style>
+	#gridcont {
+	display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+	}
+	.gridx {
+	width: 100%;	
+	}
+	
+	.grid-itemx{
+	background-size:cover;
+	width: calc(50% - 10px);
+	margin-bottom: 10px !important;
+	}
+	.imgbtn {
+    
+}
+	
+	.linknox {
+		position: absolute;
+	}
+	
+	.dalinko {
+    padding: 10px;
+    margin-bottom: 5px;
+}
+	
+	.grid-itemx a {
+    color: white;
+    
+}
+
+	
+.grid-itemx {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+	margin-bottom: 5px;
+}
+	
+.modal-target {
+  width: 300px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.modal-target:hover {opacity: 0.7;}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 900; /* Sit on top */
+  padding-top: 10px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+}
+
+/* Modal Content (image) */
+.modal-content {
+  margin: auto;
+  z-index: 910;
+  display: block;
+  width: 80%;
+  opacity: 1 !important;
+  max-width: 1200px;
+}
+#modal-content {
+    height: 80vh;
+    width: auto;
+}
+
+/* Caption of Modal Image */
+.modal-caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 1200px;
+  text-align: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1em;
+  margin-top: 32px;
+}
+
+/* Add Animation */
+.modal-content, .modal-caption {  
+  -webkit-animation-name: zoom;
+  -webkit-animation-duration: 0.6s;
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+  from {-webkit-atransform:scale(0)} 
+  to {-webkit-transform:scale(1)}
+}
+
+@keyframes zoom {
+  from {transform:scale(0)} 
+  to {transform:scale(1)}
+}
+
+/* The Close Button */
+.modal-close {
+  
+  position: relative;
+  left: 75%;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+</style>
+<div id="gridcont">
+
+	<?php if ( have_rows( 'project_image_gallery' ) ) : ?>
+<div class="gridx">
+	<?php while ( have_rows( 'project_image_gallery' ) ) : the_row(); ?><div class="indiimg">
+		<div class="grid-itemx" style="background-image: url('<?php the_sub_field( 'gallery_image' ) ?>'); background-size: cover;"><img class="modal-target imgbtn" src="<?php the_sub_field( 'gallery_image' ) ?>" style="opacity:0; width: 100%; height: 100%;">
+
+<?php if ( $image_link = get_sub_field( 'image_link' ) ) : ?>
+	<a href="<?php the_sub_field( 'image_link' ) ?>" class="linknox" target="_blank"><p class="dalinko">
+				<?php the_sub_field( 'image_credits' ) ?>
+			</p></a>
+<?php endif; ?>
+			
+	</div></div>
+	<?php endwhile; ?>
+</div>		
+<?php endif; ?>
+<!-- The Modal -->
+<div id="modal" class="modal">
+  <span id="modal-close" class="modal-close">&times;</span>
+  <img id="modal-content" class="modal-content">
+  <div id="modal-caption" class="modal-caption"></div>
+</div>
+</div>
+
+<script>
+// Modal Setup
+var modal = document.getElementById('modal');
+
+var modalMenuEffect = document.querySelector('.mainhead');
+	
+var modalClose = document.getElementById('modal-close');
+modalClose.addEventListener('click', function() { 
+  modal.style.display = "none";
+	document.querySelector('.mainhead').style.display = "block";
+});
+	
+var modalCloseY = document.getElementById('modal-content');
+modalCloseY.addEventListener('click', function() { 
+  modal.style.display = "none";
+	document.querySelector('.mainhead').style.display = "block";
+});	
+	
+var modalCloseX = document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+        modal.style.display = "none";
+		document.querySelector('.mainhead').style.display = "block";
+    }
+};	
+
+// global handler
+document.addEventListener('click', function (e) { 
+  if (e.target.className.indexOf('modal-target') !== -1) {
+      var img = e.target;
+      var modalImg = document.getElementById("modal-content");
+      var captionText = document.getElementById("modal-caption");
+      modal.style.display = "block";
+      modalImg.src = img.src;
+      captionText.innerHTML = img.alt;
+   }
+});
+	
+$('.imgbtn').click(function(){
+document.querySelector('.mainhead').style.display = "none";
+});	
+</script>
+
+
+<?php return ob_get_clean();
+    wp_reset_postdata(); 
+};
+
+<script>
+var $grid = $('.grid').imagesLoaded( function() {
+  // init Masonry after all images have loaded
+  $grid.masonry({
+  itemSelector: '.grid-item',
+  columnWidth: '.grid-item',
+  percentPosition: true, 
+  gutter: 10,
+  transitionDuration:0
+  });
+	
+});
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js"></script>
+<script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.js"></script>
